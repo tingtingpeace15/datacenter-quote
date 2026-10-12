@@ -253,8 +253,7 @@ small.mut{display:block;font-size:11px;color:var(--ink3);font-weight:400}
 .qpick .d{flex-basis:100%;font-size:12px;color:var(--ink2)}
 .qpick .pill{font-size:11px;font-weight:800;color:#fff;background:var(--star);border-radius:20px;padding:2px 9px}
 .qfoot{margin-top:24px;border-top:1px solid var(--rule);padding-top:14px;font-size:12.5px;color:var(--ink2);line-height:1.85}
-.qfoot ol{margin:0;padding-left:20px}
-.qfoot .upd{margin-top:8px;color:var(--ink3);font-size:12px}
+.qfoot .upd{color:var(--ink3);font-size:12px}
 .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
 .status{font-size:12.5px;color:var(--ink3)}
 .pgfoot{text-align:center;font-size:12px;color:var(--ink3);margin:30px 0 0;line-height:1.7}
@@ -473,7 +472,7 @@ small.mut{display:block;font-size:11px;color:var(--ink3);font-weight:400}
   </div>
 </section>
 
-<p class="pgfoot">价格更新日期 2026-09-04 · 最终以合同约定为准</p>
+<p class="pgfoot">价格更新日期 2026-09-04</p>
 
 </main>
 
@@ -834,14 +833,8 @@ function quoteHtmlInner(sel, rec){
   h += '</div>';
   /* 能力对比 */
   h += '<div class="qsec"><h3>各版本能做什么</h3><p class="swipe">表格可左右滑动 →</p><div class="tw"><table class="cmp">' + cmpTableHtml(sel) + '</table></div></div>';
-  /* 条款 */
-  h += '<div class="qfoot"><ol>'
-    + '<li>报价有效期 30 天；按年签约、按年付费。</li>'
-    + '<li>不含进销存软件本体及服务器费用。</li>'
-    + '<li>轻享版仅限 1–' + PRICE.liteMax + ' 家门店；标准版 / 专业版 ' + PRICE.minStores + ' 家起计（1–2 家按 3 家计费）；超过 ' + MAX_STORES + ' 家门店为企业版，单独报价。</li>'
-    + '<li>MCP / 开放 API 仅专业版可加购，首年另收一次性开通费 ' + fmt(ADDON_MCP.setup) + '，次年起按年费续费；企业版不含 MCP。</li>'
-    + '<li>标准版及以上账号数量不限，增加使用人数不额外收费（轻享版为 3 端口）。</li>'
-    + '</ol><div class="upd">价格更新日期 2026-09-04 · 最终以合同约定为准</div></div>';
+  /* 页脚 */
+  h += '<div class="qfoot"><div class="upd">价格更新日期 2026-09-04</div></div>';
   return h;
 }
 function renderQuote(sel, rec){ $("qdoc").innerHTML = quoteHtmlInner(sel, rec); }

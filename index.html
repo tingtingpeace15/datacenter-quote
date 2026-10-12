@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="robots" content="noindex,nofollow">
+<title>NEW数据中心报价器（市场版）</title>
+<style>:root{color-scheme:light dark}html,body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body class="app">
+<style id="appcss">
+:root{
+  --brand:#2A12CC; --brand-2:#6A5AE0; --brand-3:#A9A0EE;
+  --brand-soft:#ECEAFB; --brand-softer:#F5F3FE; --brand-ink:#1A0B7A;
+  --btn-grad:linear-gradient(135deg,#3A1FE0,#2A12CC);
+  --hero-grad:linear-gradient(155deg,#3A1FE0 0%,#2A12CC 55%,#1B0B90 100%);
+  --seg1:#2A12CC; --seg2:#6A5AE0; --seg3:#A9A0EE;
+  --star:#ff9f1a;
+  --ink:#181c26; --ink2:#565d6e; --ink3:#868c9c;
+  --bg:#eef0f5; --surface:#ffffff; --surface2:#f5f6fa;
+  --rule:#e7e9f0; --rule-2:#dcdfe8;
+  --ok:#12a150; --ok-soft:#e7f6ee; --ok-ink:#0b7a3c;
+  --warn-soft:#FFF7ED; --warn-rule:#FED7AA; --warn-ink:#9A3412;
+  --shadow:0 1px 2px rgba(20,20,60,.05),0 18px 40px -24px rgba(30,20,80,.35);
+}
+@media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+  --brand:#9A8CFF; --brand-2:#6A5AE0; --brand-3:#4A3FA8;
+  --brand-soft:#27214F; --brand-softer:#1E1A3B; --brand-ink:#CFC8FF;
+  --btn-grad:linear-gradient(135deg,#4A31E8,#3218D0);
+  --hero-grad:linear-gradient(155deg,#2D1AB8 0%,#22109A 55%,#150875 100%);
+  --seg1:#8B7CFF; --seg2:#6A5AE0; --seg3:#4A3FA8;
+  --ink:#E6E8F0; --ink2:#A8AEBF; --ink3:#7F8598;
+  --bg:#11131A; --surface:#1A1D27; --surface2:#222634;
+  --rule:#2B3042; --rule-2:#3A4058;
+  --ok:#3CC47A; --ok-soft:#163626; --ok-ink:#7FE0A8;
+  --warn-soft:#33240F; --warn-rule:#5C3B12; --warn-ink:#F2B77A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -24px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  --brand:#9A8CFF; --brand-2:#6A5AE0; --brand-3:#4A3FA8;
+  --brand-soft:#27214F; --brand-softer:#1E1A3B; --brand-ink:#CFC8FF;
+  --btn-grad:linear-gradient(135deg,#4A31E8,#3218D0);
+  --hero-grad:linear-gradient(155deg,#2D1AB8 0%,#22109A 55%,#150875 100%);
+  --seg1:#8B7CFF; --seg2:#6A5AE0; --seg3:#4A3FA8;
+  --ink:#E6E8F0; --ink2:#A8AEBF; --ink3:#7F8598;
+  --bg:#11131A; --surface:#1A1D27; --surface2:#222634;
+  --rule:#2B3042; --rule-2:#3A4058;
+  --ok:#3CC47A; --ok-soft:#163626; --ok-ink:#7FE0A8;
+  --warn-soft:#33240F; --warn-rule:#5C3B12; --warn-ink:#F2B77A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 18px 40px -24px rgba(0,0,0,.8);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6;
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+.num{font-variant-numeric:tabular-nums}
+button,input,select{font-family:inherit}
+button,select,.tier,.chip,input[type=range]{touch-action:manipulation}
+input:focus-visible,button:focus-visible,select:focus-visible,.tier:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) 40px max(16px,env(safe-area-inset-left))}
+
+/* ---- 顶栏 ---- */
+.top{position:sticky;top:0;z-index:30;background:var(--surface);border-bottom:1px solid var(--rule)}
+.topin{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--hero-grad);display:flex;align-items:center;justify-content:center;flex:none}
+.brand{line-height:1.25;min-width:0}
+.brand small{display:block;font-size:11px;letter-spacing:.08em;color:var(--ink3);font-weight:600}
+.brand h1{margin:0;font-size:17px;font-weight:800;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);border-radius:20px;padding:2px 9px;letter-spacing:.04em}
+.grow{flex:1 1 auto}
+.btn{appearance:none;border:0;background:var(--btn-grad);color:#fff;font-size:14px;font-weight:700;min-height:44px;padding:0 18px;border-radius:11px;cursor:pointer;white-space:nowrap;box-shadow:0 8px 20px -10px rgba(42,18,204,.75)}
+.btn.ghost{background:var(--surface);color:var(--brand);border:1.5px solid var(--brand);box-shadow:none}
+.btn:active{transform:translateY(1px)}
+
+/* ---- hero ---- */
+.hero{background:var(--hero-grad);color:#fff;border-radius:18px;padding:20px 22px;margin-top:16px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.09)}
+.hero::before{content:"";position:absolute;left:-40px;bottom:-80px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.06)}
+.hero .tag{position:relative;z-index:1;font-size:18px;font-weight:800;margin:0}
+.hero .intro{position:relative;z-index:1;font-size:13px;line-height:1.7;color:rgba(255,255,255,.86);margin:8px 0 0;max-width:72ch}
+
+/* ---- 区块 ---- */
+.sec{background:var(--surface);border-radius:18px;padding:18px 18px 20px;margin-top:14px;box-shadow:var(--shadow)}
+.sec .st{font-size:12px;letter-spacing:.06em;color:var(--brand);font-weight:800;margin:0 0 2px}
+.sec .sh{font-size:17px;font-weight:800;margin:0 0 14px;letter-spacing:-.01em}
+.sec .sh small{font-size:12px;font-weight:500;color:var(--ink3);margin-left:8px;letter-spacing:0}
+
+/* ---- 输入区 ---- */
+.ctl-row{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:6px}
+.field input[type=number],.field input[type=text]{background:var(--surface);color:var(--ink);border:1.5px solid var(--rule-2);border-radius:10px;min-height:44px;padding:0 12px;font-size:16px}
+.field input[type=number]{width:84px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--brand);text-align:center;-moz-appearance:textfield;appearance:textfield}
+.field input[type=number]::-webkit-inner-spin-button,.field input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.field input[type=text]{width:240px;max-width:100%}
+.stepper{display:flex;align-items:stretch;gap:6px}
+.stp{appearance:none;flex:0 0 44px;width:44px;min-height:44px;border:1.5px solid var(--rule-2);background:var(--surface2);color:var(--brand);font-size:22px;font-weight:700;line-height:1;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.stp:active{background:var(--brand-soft)}
+.stp:disabled{color:var(--ink3);opacity:.5;cursor:default}
+.field.slider{flex:1 1 260px;min-width:210px}
+input[type=range]{-webkit-appearance:none;appearance:none;display:block;width:100%;height:44px;margin:0;background:transparent;cursor:pointer;--pct:0%}
+input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;background:linear-gradient(var(--brand),var(--brand)) 0 0/var(--pct) 100% no-repeat,var(--rule-2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-10px;border-radius:50%;background:#fff;border:3px solid var(--brand);box-shadow:0 2px 8px -2px rgba(30,20,80,.45)}
+input[type=range]::-moz-range-track{height:8px;border-radius:4px;background:var(--rule-2)}
+input[type=range]::-moz-range-progress{height:8px;border-radius:4px;background:var(--brand)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid var(--brand);box-shadow:0 2px 8px -2px rgba(30,20,80,.45)}
+.rscale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:-6px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{appearance:none;border:1.5px solid var(--rule-2);background:var(--surface);color:var(--ink2);font-size:14px;font-weight:600;min-height:44px;padding:0 15px;cursor:pointer;border-radius:22px}
+.chip:hover{border-color:var(--brand);color:var(--brand)}
+.chip[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--brand);color:var(--brand-ink);font-weight:800}
+.hint{font-size:12.5px;color:var(--ink2);margin:12px 0 0;line-height:1.65;background:var(--surface2);border-radius:10px;padding:9px 12px}
+.hint b{color:var(--ink)}
+.hint a{color:var(--brand);font-weight:700;text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:11px 6px;margin:-11px -6px}
+
+/* ---- 版本卡（商城 .tier 风格） ---- */
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;padding-top:8px}
+.tier{border:1.5px solid var(--rule-2);border-radius:15px;padding:15px 15px 14px;cursor:pointer;position:relative;transition:.16s;background:var(--surface);display:flex;flex-direction:column}
+.tier.sel{border-color:var(--brand);background:var(--brand-softer);box-shadow:0 0 0 3px var(--brand-soft),var(--shadow)}
+.tier.sel .feats span{background:var(--surface)}
+.tier.off{opacity:.45;cursor:default}
+.tier .star{position:absolute;top:-11px;right:14px;background:var(--star);color:#fff;font-size:11px;font-weight:800;padding:3px 10px 3px 8px;border-radius:20px;display:flex;align-items:center;gap:3px;box-shadow:0 4px 10px -3px rgba(255,159,26,.7)}
+.tier .row1{display:flex;align-items:center;gap:8px}
+.tier .nm{font-size:16.5px;font-weight:800}
+.tier .radio{margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--rule-2);flex:0 0 auto;display:flex;align-items:center;justify-content:center;transition:.15s}
+.tier.sel .radio{border-color:var(--brand);background:var(--brand)}
+.tier.sel .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:#fff}
+.tier .sub{font-size:11.5px;color:var(--ink3);font-weight:500;margin-top:2px;min-height:18px}
+.tier .price{display:flex;align-items:baseline;gap:6px;margin-top:10px}
+.tier .price .big{font-size:26px;font-weight:800;color:var(--brand);letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+.tier .price .yr{font-size:12px;color:var(--ink3);font-weight:600}
+.tier .permo{font-size:12px;color:var(--ink2);margin-top:7px;font-variant-numeric:tabular-nums}
+.tier .permo b{color:var(--ink);font-weight:700}
+.tier .permo .minn{font-size:11px;color:var(--ink3);margin-left:2px}
+.tier .na{font-size:13px;color:var(--ink3);margin-top:12px;font-weight:600}
+.tier .edesc{margin:10px 0 0;font-size:13px;color:var(--ink2);line-height:1.55}
+.tier .edesc b{color:var(--brand);font-weight:800}
+.tier .feats{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto;padding-top:11px;border-top:1px solid var(--rule)}
+.tier .feats-gap{height:11px}
+.tier .feats span{font-size:11px;color:var(--ink2);background:var(--surface2);border-radius:6px;padding:3px 8px;line-height:1.5}
+
+/* ---- MCP 加购（商城 .addon 风格） ---- */
+.addon{margin-top:16px}
+.addon:empty{display:none}
+.addon .ah{font-size:13px;font-weight:800;color:var(--ink);margin:0 0 9px}
+.addon .acard{border:1.5px solid var(--rule-2);border-radius:15px;padding:14px 15px;background:var(--surface)}
+.addon .at{font-size:15px;font-weight:800}
+.addon .ad{font-size:12px;color:var(--ink2);line-height:1.55;margin:4px 0 0}
+.addon .arow{display:flex;align-items:center;gap:12px;margin-top:12px;flex-wrap:wrap}
+.addon select{flex:1 1 240px;min-width:0;min-height:44px;font-size:14px;color:var(--ink);border:1.5px solid var(--rule-2);border-radius:10px;padding:0 10px;background:var(--surface)}
+.addon .ap{flex:0 0 auto;text-align:right;margin-left:auto}
+.addon .ap .v{font-size:18px;font-weight:800;color:var(--brand);white-space:nowrap;font-variant-numeric:tabular-nums}
+.addon .ap .v small{font-size:11.5px;color:var(--ink3);font-weight:600;margin-left:3px}
+.addon .anote{font-size:11.5px;color:var(--ink3);line-height:1.5;margin:8px 0 0;text-align:right}
+
+/* ---- 价格怎么算（商城 .calc 风格） ---- */
+.calc{border-radius:16px;overflow:hidden;border:1px solid var(--rule)}
+.calc .top2{background:var(--hero-grad);color:#fff;padding:14px 18px 15px}
+.calc .top2 .k{font-size:11.5px;letter-spacing:.08em;opacity:.85;font-weight:600}
+.calc .top2 .q{font-size:15.5px;font-weight:800;margin-top:4px}
+.calc .top2 .q b{font-size:24px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.calc .top2 .desc{font-size:12px;opacity:.85;margin-top:6px;line-height:1.6}
+.calc .body2{background:var(--surface);padding:16px 18px 18px}
+.calc .k2{font-size:12px;color:var(--ink3);margin:0 0 10px;line-height:1.5}
+.calc .bar{display:flex;height:30px;border-radius:8px;overflow:hidden;background:var(--brand-soft);margin-bottom:6px}
+.calc .bar i{display:flex;align-items:center;justify-content:center;font-size:11px;font-style:normal;color:#fff;font-weight:700;min-width:0;white-space:nowrap;overflow:hidden;border-right:2px solid var(--surface)}
+.calc .bar i:last-child{border-right:0}
+.calc .barlab{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:12px}
+.calc .line{display:flex;align-items:center;padding:11px 0;border-top:1px solid var(--rule);gap:9px}
+.calc .line.first{border-top:0}
+.calc .line .dot{width:9px;height:9px;border-radius:2px;flex:0 0 auto}
+.calc .line .seg{flex:1;min-width:0;font-size:13px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.calc .line .seg b{color:var(--ink);font-weight:700}
+.calc .line .sub{font-size:13.5px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc .line.minrow .seg{color:var(--ink3);font-size:12px}
+.calc .total{display:flex;align-items:baseline;gap:8px;padding:13px 0 3px;border-top:2px solid var(--brand);margin-top:4px}
+.calc .total .l{font-size:14px;font-weight:800;color:var(--ink)}
+.calc .total .l em{font-style:normal;font-weight:500;color:var(--ink3);font-size:11.5px;margin-left:6px}
+.calc .total .v{margin-left:auto;font-size:22px;font-weight:900;color:var(--brand);font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc .renew{font-size:12px;color:var(--ink3);line-height:1.5;margin:6px 0 0;text-align:right}
+.calc .note{margin-top:12px;background:var(--brand-softer);border-radius:10px;padding:10px 13px;font-size:12px;color:var(--brand-ink);line-height:1.65}
+
+/* ---- 合计条 ---- */
+.paybar{position:sticky;bottom:0;z-index:20;margin-top:14px;background:var(--surface);border:1px solid var(--rule);border-radius:16px;
+  padding:12px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 -6px 24px -14px rgba(30,20,80,.35)}
+.paybar .sum{flex:1 1 220px;min-width:0}
+.paybar .a{font-size:12px;color:var(--ink3)}
+.paybar .b{font-size:22px;font-weight:800;color:var(--brand);line-height:1.2;font-variant-numeric:tabular-nums}
+.paybar .b.muted{color:var(--ink2);font-size:16px}
+.paybar .c{font-size:12px;color:var(--ink2);margin-top:2px}
+
+/* ---- 表格 ---- */
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;border:1px solid var(--rule);border-radius:12px;max-width:100%}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+.swipe{display:none;font-size:11.5px;color:var(--ink3);margin:0 0 6px}
+@media screen{
+  /* 横滑时首列固定（同商城 app.css 对比表做法） */
+  .tw tr > :first-child{position:sticky;left:0;z-index:1;background:var(--surface)}
+  .tw thead tr > :first-child{background:var(--surface2);z-index:2}
+  .tw tr.hl > :first-child{background:var(--brand-soft)}
+}
+th,td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--rule);vertical-align:middle;line-height:1.5}
+thead th{font-size:12px;font-weight:800;background:var(--surface2);color:var(--ink);white-space:nowrap}
+tbody tr:last-child > *{border-bottom:0}
+th.l,td.l{text-align:left}
+tbody th{font-weight:600;color:var(--ink2)}
+td.n{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+td.na{color:var(--ink3)}
+tr.hl > *{background:var(--brand-soft)}
+tr.hl td.n{color:var(--brand-ink);font-weight:700}
+small.mut{display:block;font-size:11px;color:var(--ink3);font-weight:400}
+.cmp{min-width:600px}
+.cmp tbody th{text-align:left;white-space:nowrap}
+.cmp tbody th .hint2{display:block;font-size:11px;color:var(--ink3);font-weight:400;white-space:normal}
+.cmp td{color:var(--ink2)}
+.cmp .yes{color:var(--brand);font-weight:800}
+.cmp .no{color:var(--ink3)}
+.cmp td.strong{color:var(--ink);font-weight:700}
+.cmp .hi{background:var(--brand-soft)}
+.cmp thead th.hi{background:var(--brand);color:#fff}
+.cmp td.ent{font-size:12px}
+.tnote{font-size:12px;color:var(--ink3);margin:10px 0 0;line-height:1.65}
+.tnote b{color:var(--ink2)}
+.duo{display:grid;grid-template-columns:1fr;gap:18px}
+.duo > div{min-width:0}
+@media(min-width:860px){.duo{grid-template-columns:.8fr 1.2fr}}
+.duo h4{margin:0 0 8px;font-size:13px;font-weight:800;color:var(--ink)}
+.quick{min-width:560px}
+.ladder{min-width:300px}
+.qt{min-width:460px}
+
+/* ---- 客户报价单 ---- */
+.qwrap{margin-top:26px;scroll-margin-top:72px}
+.qlabel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.qlabel h3{margin:0;font-size:16px;font-weight:800}
+.qlabel span{font-size:12px;color:var(--ink3)}
+.qdoc{background:var(--surface);border:1px solid var(--rule);border-radius:16px;box-shadow:var(--shadow);padding:30px 34px}
+@media(max-width:640px){.qdoc{padding:20px 16px}}
+.qhead{border-top:4px solid var(--brand);padding-top:16px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:flex-start}
+.qhead .bl{font-size:11.5px;letter-spacing:.12em;color:var(--brand);font-weight:800}
+.qhead > div{min-width:0}
+.qhead h2{font-size:24px;font-weight:800;line-height:1.3;margin:4px 0 0;letter-spacing:-.01em;overflow-wrap:anywhere}
+.qhead .meta{font-size:12px;color:var(--ink2);text-align:right;line-height:1.85;font-variant-numeric:tabular-nums}
+.qsub{color:var(--ink2);margin:12px 0 0;max-width:66ch;font-size:13.5px;line-height:1.75}
+.qsec{margin-top:24px}
+.qsec h3{font-size:14.5px;font-weight:800;margin:0 0 10px;padding-bottom:7px;border-bottom:1px solid var(--rule-2);display:flex;align-items:baseline;gap:8px}
+.qsec h3 small{font-size:11.5px;font-weight:500;color:var(--ink3)}
+.qpick{border:1.5px solid var(--brand);background:var(--brand-softer);border-radius:14px;padding:14px 18px;display:flex;gap:6px 16px;align-items:baseline;flex-wrap:wrap;margin-bottom:12px}
+.qpick .a{font-weight:800;font-size:18px;color:var(--brand-ink)}
+.qpick .c{font-size:12.5px;color:var(--ink2)}
+.qpick .b{font-size:26px;font-weight:900;color:var(--brand);margin-left:auto;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qpick .b small{font-size:13px;font-weight:600;color:var(--ink3);margin-left:2px}
+.qpick .d{flex-basis:100%;font-size:12px;color:var(--ink2)}
+.qpick .pill{font-size:11px;font-weight:800;color:#fff;background:var(--star);border-radius:20px;padding:2px 9px}
+.qfoot{margin-top:24px;border-top:1px solid var(--rule);padding-top:14px;font-size:12.5px;color:var(--ink2);line-height:1.85}
+.qfoot ol{margin:0;padding-left:20px}
+.qfoot .upd{margin-top:8px;color:var(--ink3);font-size:12px}
+.actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;align-items:center}
+.status{font-size:12.5px;color:var(--ink3)}
+.pgfoot{text-align:center;font-size:12px;color:var(--ink3);margin:30px 0 0;line-height:1.7}
+
+/* ---- 手机（375–430px 为主） ---- */
+@media(max-width:640px){
+  body{font-size:15px}
+  .top{position:static}
+  .topin{padding:10px max(16px,env(safe-area-inset-right)) 10px max(16px,env(safe-area-inset-left))}
+  .brand h1{font-size:16px}
+  #goQuote{display:none}
+  .hero{padding:16px 16px;margin-top:12px;border-radius:16px}
+  .hero .tag{font-size:16px;line-height:1.45}
+  .hero .intro{font-size:13px}
+  .sec{padding:16px 14px 18px;border-radius:16px;margin-top:12px}
+  .sec .sh{font-size:16px;line-height:1.45}
+  .sec .sh small{display:block;margin:2px 0 0}
+
+  /* 输入区：一列排布，单手可点 */
+  .ctl-row{flex-direction:column;align-items:stretch;gap:14px}
+  .field.slider,.field.cust{flex:none;min-width:0}
+  .stp{flex-basis:52px;width:52px;min-height:52px;font-size:26px}
+  .field input[type=number]{flex:1 1 auto;width:auto;min-width:0;min-height:52px;font-size:22px}
+  .field input[type=text]{width:100%}
+  .chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .chip{padding:0 4px}
+  .hint{font-size:13px}
+
+  /* 版本卡：纵向排列，选中态加底色 */
+  .tiers{grid-template-columns:1fr;gap:14px}
+  .tier{padding:14px 14px 13px}
+  .tier.sel{border-width:2px}
+  .tier .price .big{font-size:26px}
+  .tier .permo{font-size:12.5px}
+  .tier.off .feats,.tier.off .feats-gap{display:none}
+  .tier.off .na{margin-top:6px}
+  .addon .arow{flex-direction:column;align-items:stretch;gap:10px}
+  .addon select{flex:none;width:100%;min-height:48px;font-size:16px}
+  .addon .ap{margin-left:0}
+
+  /* 分段账单 */
+  .calc .top2,.calc .body2{padding-left:14px;padding-right:14px}
+  .calc .line .seg{font-size:13.5px}
+  .calc .note{font-size:12.5px}
+
+  /* 表格：横滑 + 首列固定 + 提示 */
+  .swipe{display:block}
+  .tw tr > :first-child{box-shadow:6px 0 8px -6px rgba(30,20,80,.22)}
+  th,td{padding:10px 9px}
+  .cmp{min-width:520px}
+  .cmp tbody th{white-space:normal;min-width:104px;max-width:112px;word-break:keep-all}
+  .quick{min-width:520px}
+  .tnote{font-size:12.5px}
+
+  /* 合计条：固定在底部，避开 iOS 安全区，正文留出等高空间 */
+  .paybar{position:fixed;left:0;right:0;bottom:0;z-index:40;margin:0;border-radius:16px 16px 0 0;border-width:1px 0 0;flex-wrap:nowrap;gap:12px;
+    padding:10px max(16px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  .paybar .sum{flex:1 1 auto}
+  .paybar .a{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .paybar .b{font-size:21px;white-space:nowrap}
+  .paybar .c{font-size:11.5px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .paybar .btn{flex:0 0 auto;min-height:48px;padding:0 14px}
+  body.app{padding-bottom:calc(var(--pbh,104px) + 8px)}
+
+  /* 报价单 */
+  .qwrap{margin-top:20px;scroll-margin-top:12px}
+  .qlabel span{flex-basis:100%}
+  .qdoc{padding:18px 14px;border-radius:14px}
+  .qhead{gap:10px}
+  .qhead h2{font-size:20px}
+  .qhead .meta{text-align:left;font-size:12.5px;line-height:1.75}
+  .qsub{font-size:13.5px}
+  .qpick{padding:12px 14px}
+  .qpick .b{margin-left:0;font-size:24px}
+  .qfoot{font-size:13px}
+  .actions{flex-direction:column;align-items:stretch}
+  .actions .btn{width:100%;min-height:48px}
+  .status{text-align:center}
+}
+@media(max-width:360px){
+  .chips{grid-template-columns:repeat(3,1fr)}
+  .paybar .b{font-size:18px}
+}
+
+@media print{
+  :root,:root[data-theme="dark"]{
+    --brand:#2A12CC; --brand-soft:#ECEAFB; --brand-softer:#F5F3FE; --brand-ink:#1A0B7A;
+    --seg1:#2A12CC; --seg2:#6A5AE0; --seg3:#A9A0EE; --hero-grad:linear-gradient(155deg,#3A1FE0,#2A12CC 55%,#1B0B90);
+    --ink:#111; --ink2:#444; --ink3:#777; --bg:#fff; --surface:#fff; --surface2:#f3f4f8; --rule:#ddd; --rule-2:#ccc;
+  }
+  body{background:#fff;color:#111;font-size:10.5pt}
+  .top,#tool,.paybar,.actions,.qlabel,.pgfoot,.swipe{display:none!important}
+  body,body.app{padding:0}
+  .wrap{padding:0;max-width:none}
+  .qwrap{margin:0}
+  .qdoc{border:0;box-shadow:none;padding:0;border-radius:0}
+  .tw{overflow:visible;border-color:#ccc}
+  table{font-size:9pt}
+  .cmp,.quick,.qt{min-width:0}
+  .qsec{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  @page{size:A4;margin:14mm}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top"><div class="topin">
+  <div class="logo" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="11" width="3.6" height="8" rx="1" fill="#fff"/><rect x="10.2" y="5.5" width="3.6" height="13.5" rx="1" fill="#fff"/><rect x="16.9" y="8.5" width="3.6" height="10.5" rx="1" fill="#fff"/></svg></div>
+  <div class="brand">
+    <small>SoticKiwi · NEW数据中心</small>
+    <h1>NEW数据中心报价器<span class="badge">市场版</span></h1>
+  </div>
+  <div class="grow"></div>
+  <button class="btn ghost" id="goQuote" type="button">查看客户报价单 ↓</button>
+</div></header>
+
+<main class="wrap">
+
+<div id="tool">
+
+  <section class="hero">
+    <p class="tag">数据中心，让每一笔进销存数据都更有价值。</p>
+    <p class="intro">基于销售、库存与门店数据，提供多维对比和归因分析，定位业绩波动原因，识别重点商品与异常门店。通过预警分析，让经营问题更早浮现。用数据发现机会，让下一步经营决策更有把握。</p>
+  </section>
+
+  <!-- 输入区 -->
+  <section class="sec">
+    <p class="st">门店数量</p>
+    <p class="sh">输入客户门店数，自动推荐版本并算价</p>
+    <div class="ctl-row">
+      <div class="field">
+        <label for="n">门店数量（家）</label>
+        <div class="stepper">
+          <button class="stp" id="nMinus" type="button" aria-label="减少 1 家">−</button>
+          <input type="number" id="n" min="1" max="999" step="1" value="10" inputmode="numeric" pattern="[0-9]*" enterkeyhint="done" autocomplete="off">
+          <button class="stp" id="nPlus" type="button" aria-label="增加 1 家">+</button>
+        </div>
+      </div>
+      <div class="field slider">
+        <label for="nr">拖动调整</label>
+        <input type="range" id="nr" min="1" max="60" step="1" value="10" aria-label="门店数量滑块">
+        <div class="rscale" aria-hidden="true"><span>1</span><span>20</span><span>40</span><span>60</span></div>
+      </div>
+      <div class="field cust">
+        <label for="cust">客户名称（选填）</label>
+        <input type="text" id="cust" placeholder="用于报价单抬头" maxlength="40">
+      </div>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="常用门店数"></div>
+    <p class="hint" id="hint"></p>
+  </section>
+
+  <!-- 版本卡 + MCP 加购 -->
+  <section class="sec">
+    <p class="st">选择版本</p>
+    <p class="sh" id="tiersHead">按门店数，已推荐版本</p>
+    <div class="tiers" id="tiers" role="radiogroup" aria-label="选择版本"></div>
+    <div class="addon" id="addon"></div>
+  </section>
+
+  <!-- 价格怎么算 -->
+  <section class="sec">
+    <p class="st">价格怎么算</p>
+    <p class="sh">分段账单<small>门店按区段分段计价，越往后的门店单价越低</small></p>
+    <div class="calc" id="calc"></div>
+  </section>
+
+  <!-- 合计条 -->
+  <div class="paybar" id="paybar">
+    <div class="sum">
+      <div class="a" id="payLabel">已选版本 · 首年合计</div>
+      <div class="b" id="payPrice">—</div>
+      <div class="c" id="payNote"></div>
+    </div>
+    <button class="btn" id="goQuote2" type="button">生成客户报价单</button>
+  </div>
+
+  <!-- 版本能力对比 -->
+  <section class="sec">
+    <p class="st">版本能力</p>
+    <p class="sh">不同版本能做什么</p>
+    <p class="swipe">表格可左右滑动 →</p>
+    <div class="tw"><table class="cmp" id="cmp"></table></div>
+    <p class="tnote">企业版功能与价格按需定制，不含 MCP / 开放 API；门店超过 50 家请选择企业版，联系您的专属顾问获取方案。</p>
+  </section>
+
+  <!-- 价目速查 -->
+  <section class="sec">
+    <p class="st">价目表</p>
+    <p class="sh">阶梯单价与常见门店数速查</p>
+    <div class="duo">
+      <div>
+        <h4>阶梯单价（元 / 店 / 年）</h4>
+        <div class="tw"><table class="ladder" id="ladderTbl"></table></div>
+        <p class="tnote">标准版 / 专业版按区段累进计价，<b>3 家起计</b>（1–2 家按 3 家价格算）；轻享版仅限 1–3 家，¥380 / 店 / 年一口价；超过 50 家为企业版，单独报价。</p>
+      </div>
+      <div>
+        <h4>常见门店数价目速查（年费）</h4>
+        <p class="swipe">表格可左右滑动 →</p>
+        <div class="tw"><table class="quick" id="quick"></table></div>
+        <p class="tnote">每店每月 = 年费 ÷ 计费门店数 ÷ 12；不足 3 家的标准版 / 专业版按 3 家折算。</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- 客户报价单 -->
+<section class="qwrap" id="quoteWrap">
+  <div class="qlabel"><h3>客户报价单</h3><span>按上方门店数与所选版本实时生成，可直接打印或下载发给客户</span></div>
+  <div id="quote"><div class="qdoc" id="qdoc"></div></div>
+  <div class="actions">
+    <button class="btn" id="doPrint" type="button">打印 / 存为 PDF</button>
+    <button class="btn ghost" id="doDl" type="button">下载报价单（HTML）</button>
+    <span class="status" id="dlMsg" role="status"></span>
+  </div>
+</section>
+
+<p class="pgfoot">价格更新日期 2026-09-04 · 最终以合同约定为准</p>
+
+</main>
+
+<script>
+(function(){
+"use strict";
+
+/* ===== 价目（与商城 js/pricing.js 一致，写死，不可在页面修改） ===== */
+var MAX_STORES = 50;          /* 1–50 家计价；51 家起为企业版，单独报价 */
+var REC_PRO_THRESHOLD = 10;   /* 门店数 < 10 推荐标准版，≥ 10 推荐专业版 */
+var PRICE = {
+  minStores: 3,               /* 标准 / 专业：3 家起计 */
+  liteMax: 3,                 /* 轻享：仅限 1–3 家 */
+  lite: 380,                  /* 轻享：一口价 元/店/年 */
+  std: [[5,380],[20,280],[50,180]],
+  pro: [[5,560],[20,420],[50,280]]
+};
+var ADDON_MCP = {
+  setup: 3000,                /* 一次性开通费，仅首年 */
+  tiers: [
+    {key:"none", label:"不开通", yearly:0},
+    {key:"std",  label:"标准档 · 10 万次/年", yearly:12000},
+    {key:"plus", label:"增强档 · 50 万次/年", yearly:30000},
+    {key:"unl",  label:"无限档", yearly:60000}
+  ]
+};
+
+function normN(n){ n = Math.floor(Number(n)); return n >= 1 ? n : 1; }
+function storeStatus(n){ return normN(n) > MAX_STORES ? "over" : "ok"; }
+/* 累进分段计价（同商城 ladder）：计费店数 = max(n, 3)，逐段相加 */
+function ladder(n, tiers){
+  n = normN(n);
+  if(storeStatus(n) !== "ok") return {blocked: "over"};
+  var billed = Math.max(n, PRICE.minStores), total = 0, prev = 0, parts = [];
+  for(var i = 0; i < tiers.length; i++){
+    var cap = tiers[i][0], unit = tiers[i][1];
+    var seg = Math.max(0, Math.min(billed, cap) - prev);
+    if(seg > 0){
+      parts.push({from: prev + 1, to: prev + seg, count: seg, unit: unit, sub: seg * unit, idx: i});
+      total += seg * unit;
+    }
+    prev = cap;
+    if(billed <= cap) break;
+  }
+  return {total: total, parts: parts, billed: billed, n: n};
+}
+/* 轻享：仅 1–3 家，一口价 × 实际门店数 */
+function litePlan(n){
+  n = normN(n);
+  if(storeStatus(n) !== "ok" || n > PRICE.liteMax) return null;
+  return {total: n * PRICE.lite, parts: [{from: 1, to: n, count: n, unit: PRICE.lite, sub: n * PRICE.lite, idx: 0}], billed: n, n: n};
+}
+function plans(n){
+  if(storeStatus(n) !== "ok") return null;
+  return {lite: litePlan(n), std: ladder(n, PRICE.std), pro: ladder(n, PRICE.pro)};
+}
+/* 推荐（同商城）：> 50 企业版；< 10 标准版；≥ 10 专业版；不推荐轻享 */
+function recommend(n){
+  n = normN(n);
+  if(storeStatus(n) === "over") return "ent";
+  return n < REC_PRO_THRESHOLD ? "std" : "pro";
+}
+function mcpTier(key){ return ADDON_MCP.tiers.filter(function(t){ return t.key === key; })[0] || ADDON_MCP.tiers[0]; }
+function mcpYearly(key){ return mcpTier(key).yearly; }
+function mcpFirstYear(key){ var y = mcpYearly(key); return y ? y + ADDON_MCP.setup : 0; }
+function renewalTotal(planTotal, mcpY){ return planTotal + (mcpY || 0); }
+
+/* ===== 文案（取自商城 app.js） ===== */
+var NAME = {lite:"轻享版", std:"标准版", pro:"专业版", ent:"企业版"};
+var SUB  = {lite:"基础报表", std:"预警 + AI 问数 + 定制", pro:"智能预警推送 + 专业服务 + 全局诊断", ent:"50 家以上或有个性化需求"};
+var FEAT = {
+  lite:["准实时刷新","10 张报表（不含看板+导出）","3 端口"],
+  std:["25 张看板+报表+导出","经营预警/归因","AI 问数 5 人可用","账号不限"],
+  pro:["看板+报表不限","智能诊断/推送","AI 问数人数不限","数据运营专家服务"],
+  ent:["按需定制"]
+};
+/* 能力对比：[能力, 轻享, 标准, 专业, 说明, 企业(缺省=按需定制)] */
+var CMP = [
+  ["数据刷新",         "准实时", "准实时", "准实时", "数据多久更新一次"],
+  ["历史数据",         "12 个月", "24 个月", "不限", "可回看多久的数据"],
+  ["账号数",           "3 端口", "不限", "不限", "可同时登录账号数"],
+  ["看板+报表+导出",   "10 张报表，不含看板+导出", "25 张看板+报表+导出", "不限"],
+  ["定制看板+报表",    "—", "可定制，限 2 次/年", "可定制"],
+  ["数据运营专家服务", "—", "—", "✓", "专人解读给建议"],
+  ["经营预警/归因",    "—", "✓", "✓", "异常提醒并找原因"],
+  ["智能诊断/推送",    "—", "—", "✓", "定期诊断推微信"],
+  ["AI 问数",          "—", "5 人可用", "人数不限", "微信经营数据问答"],
+  ["MCP 接口",         "—", "—", "可加购", "对外数据接口", "不含"],
+  ["AI 用量",          "—", "1 倍 Token（额度）", "4 倍 Token（额度）", "Token 用量上限"]
+];
+var SEGC = ["var(--seg1)","var(--seg2)","var(--seg3)"];
+var QUICK_LIST = [1,3,5,8,10,15,20,30,40,50];
+var CHIP_LIST = [1,3,5,10,20,30,50];
+
+var ICON_STAR = '<svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.8 5.4 21l1.4-7L1.6 9.3l7-.8z"/></svg>';
+
+/* ===== 工具 ===== */
+var $ = function(id){ return document.getElementById(id); };
+function fmt(v){ return "¥" + Math.round(v).toLocaleString("en-US"); }
+function rng(a, b){ return a === b ? "第 " + a + " 家" : "第 " + a + "–" + b + " 家"; }
+function perMo(d){ return Math.round(d.total / d.billed / 12 * 10) / 10; }
+function perDay(d){ return (d.total / d.billed / 365).toFixed(2); }
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function ymd(d){ return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+
+var state = {n: 10, sel: null, mcp: "none", cust: ""};
+
+/* 当前生效版本：> 50 家只能企业版；手动选过且可选则用手动的；否则用推荐 */
+function curSel(){
+  var n = state.n, rec = recommend(n);
+  if(storeStatus(n) === "over") return "ent";
+  if(state.sel === "ent") return "ent";
+  if(state.sel && plans(n)[state.sel]) return state.sel;
+  return rec;
+}
+function mcpOn(sel){ return sel === "pro" && state.mcp !== "none" ? state.mcp : null; }
+function curPlan(sel){ return sel === "ent" ? null : plans(state.n)[sel]; }
+
+/* ===== 输入提示 ===== */
+function renderHint(sel, rec){
+  var n = state.n, tip;
+  if(storeStatus(n) === "over"){
+    tip = "超过 " + MAX_STORES + " 家门店为<b>企业版</b>，不提供公开价目，请联系您的专属顾问获取方案。";
+  } else if(n < PRICE.minStores){
+    tip = "标准版 / 专业版 <b>" + PRICE.minStores + " 家起计</b>：" + n + " 家门店按 " + PRICE.minStores + " 家价格计算；轻享版按实际门店数 ¥" + PRICE.lite + " / 店 / 年，仅限 1–" + PRICE.liteMax + " 家。";
+  } else if(n === PRICE.liteMax){
+    tip = n + " 家门店时轻享版与标准版同价（" + fmt(litePlan(n).total) + "），标准版功能更完整。";
+  } else {
+    tip = "点击版本卡可切换版本，下方算式、合计与客户报价单同步更新。";
+  }
+  if(sel !== rec && storeStatus(n) === "ok") tip += ' 当前手动选择了<b>' + NAME[sel] + '</b>（推荐 ' + NAME[rec] + '）· <a href="#" id="unpin">恢复推荐</a>';
+  $("hint").innerHTML = tip;
+}
+
+/* ===== 快捷按钮 ===== */
+function renderChips(){
+  $("chips").innerHTML = CHIP_LIST.map(function(v){
+    return '<button class="chip" type="button" data-n="' + v + '" aria-pressed="' + (v === state.n) + '">' + v + ' 店</button>';
+  }).join("");
+}
+
+/* ===== 版本卡 ===== */
+function renderTiers(sel, rec){
+  var n = state.n, over = storeStatus(n) === "over", p = plans(n), html = "";
+  $("tiersHead").textContent = over ? "客户门店规模适合企业版" : "按门店数，已推荐版本";
+  ["lite","std","pro"].forEach(function(k){
+    var d = p ? p[k] : null, isRec = rec === k, isSel = sel === k;
+    if(!d){
+      html += '<div class="tier off" aria-disabled="true">'
+        + '<div class="row1"><span class="nm">' + NAME[k] + '</span><span class="radio"></span></div>'
+        + '<div class="sub">' + SUB[k] + '</div>'
+        + '<div class="na">' + (over ? "超过 " + MAX_STORES + " 家请选择企业版" : "仅限 1–" + PRICE.liteMax + " 家门店") + '</div>'
+        + '<div class="feats-gap"></div><div class="feats">' + FEAT[k].map(function(f){ return '<span>' + f + '</span>'; }).join("") + '</div></div>';
+      return;
+    }
+    html += '<div class="tier' + (isSel ? ' sel' : '') + '" data-k="' + k + '" role="radio" aria-checked="' + isSel + '" tabindex="0">'
+      + (isRec ? '<div class="star">' + ICON_STAR + '推荐</div>' : '')
+      + '<div class="row1"><span class="nm">' + NAME[k] + '</span><span class="radio"></span></div>'
+      + '<div class="sub">' + SUB[k] + '</div>'
+      + '<div class="price"><span class="big">' + fmt(d.total) + '</span><span class="yr">/年</span></div>'
+      + '<div class="permo">每店每月 <b>¥' + perMo(d) + '</b> · 每店每天 <b>¥' + perDay(d) + '</b>'
+        + (d.billed > n ? '<span class="minn">（' + PRICE.minStores + ' 家起计）</span>' : '') + '</div>'
+      + '<div class="feats-gap"></div><div class="feats">' + FEAT[k].map(function(f){ return '<span>' + f + '</span>'; }).join("") + '</div></div>';
+  });
+  var eSel = sel === "ent";
+  html += '<div class="tier ent' + (eSel ? ' sel' : '') + '" data-k="ent" role="radio" aria-checked="' + eSel + '" tabindex="0">'
+    + (rec === "ent" ? '<div class="star">' + ICON_STAR + '推荐</div>' : '')
+    + '<div class="row1"><span class="nm">' + NAME.ent + '</span><span class="radio"></span></div>'
+    + '<div class="sub">' + SUB.ent + '</div>'
+    + '<p class="edesc"><b>单独报价</b><br>联系您的专属顾问获取方案</p>'
+    + '<div class="feats-gap"></div><div class="feats">' + FEAT.ent.map(function(f){ return '<span>' + f + '</span>'; }).join("") + '</div></div>';
+  $("tiers").innerHTML = html;
+}
+
+/* ===== MCP 加购（仅专业版） ===== */
+function renderAddon(sel){
+  var el = $("addon");
+  if(sel !== "pro"){ el.innerHTML = ""; return; }
+  var key = state.mcp, fy = mcpFirstYear(key), yr = mcpYearly(key);
+  el.innerHTML = '<p class="ah">加购项（可选）</p><div class="acard">'
+    + '<div class="at">MCP / 开放 API</div>'
+    + '<p class="ad">对接客户自己的系统或 AI 助手，需专业版；按年计费，首年另收一次性开通费 ' + fmt(ADDON_MCP.setup) + '。</p>'
+    + '<div class="arow"><select id="mcpSel" aria-label="MCP / 开放 API 档位">'
+    + ADDON_MCP.tiers.map(function(x){ return '<option value="' + x.key + '"' + (x.key === key ? ' selected' : '') + '>' + x.label + (x.yearly ? '（' + fmt(x.yearly) + '/年）' : '') + '</option>'; }).join("")
+    + '</select><div class="ap"><div class="v">' + fmt(fy) + (fy ? '<small>首年</small>' : '') + '</div></div></div>'
+    + (yr ? '<p class="anote">首年 = 年费 ' + fmt(yr) + ' + 开通费 ' + fmt(ADDON_MCP.setup) + '；次年起 ' + fmt(yr) + '/年（不含开通费）</p>' : '<p class="anote">选择档位后计入首年合计</p>')
+    + '</div>';
+}
+
+/* ===== 分段账单（同商城 billLinesHtml） ===== */
+function billLinesHtml(k, n){
+  var d = plans(n)[k], isLite = k === "lite";
+  var bar = d.parts.map(function(pt){
+    var pct = pt.sub / d.total * 100;
+    return '<i style="width:' + pct + '%;background:' + SEGC[pt.idx] + '">' + (pct > 18 ? fmt(pt.sub) : '') + '</i>';
+  }).join("");
+  var lines = d.parts.map(function(pt, i){
+    return '<div class="line' + (i === 0 ? ' first' : '') + '"><span class="dot" style="background:' + SEGC[pt.idx] + '"></span>'
+      + '<span class="seg"><b>' + (isLite ? pt.count + ' 家' : rng(pt.from, pt.to)) + '</b> × ¥' + pt.unit.toLocaleString("en-US") + (isLite ? '' : ' <span style="color:var(--ink3)">（' + pt.count + ' 家）</span>') + '</span>'
+      + '<span class="sub">= ' + fmt(pt.sub) + '</span></div>';
+  }).join("");
+  var minRow = d.billed > n
+    ? '<div class="line minrow"><span class="dot" style="background:transparent"></span><span class="seg">共 ' + n + ' 家门店，' + PRICE.minStores + ' 家起计，按 ' + PRICE.minStores + ' 家计费</span><span class="sub"></span></div>' : '';
+  return '<p class="k2">' + NAME[k] + ' · ' + n + ' 家门店 · ' + (isLite ? "轻享版一口价 ¥" + PRICE.lite + "/店/年，仅限 1–" + PRICE.liteMax + " 家" : "门店按区段分段计价，越往后的门店单价越低") + '</p>'
+    + (isLite ? '' : '<div class="bar">' + bar + '</div><div class="barlab"><span>第 1 家</span><span>第 ' + d.billed + ' 家</span></div>')
+    + lines + minRow;
+}
+function mcpLineHtml(k){
+  return '<div class="line"><span class="dot" style="background:var(--star)"></span><span class="seg"><b>MCP / 开放 API</b> · ' + mcpTier(k).label.split(" · ")[0]
+    + '（年费 ' + fmt(mcpYearly(k)) + ' + 开通费 ' + fmt(ADDON_MCP.setup) + '）</span><span class="sub">= ' + fmt(mcpFirstYear(k)) + ' 首年</span></div>';
+}
+function renewText(sel, planTotal, mcpY){
+  var r = renewalTotal(planTotal, mcpY);
+  return mcpY ? '次年起续费 ' + fmt(r) + '/年（' + NAME[sel] + ' ' + fmt(planTotal) + ' + MCP ' + fmt(mcpY) + '），不含一次性开通费'
+              : '次年起续费 ' + fmt(r) + '/年，与首年相同（门店数不变时）';
+}
+function entCalcHtml(n){
+  return '<div class="top2"><div class="k">企业版 · ' + n + ' 家门店</div>'
+    + '<div class="q">企业版需单独报价</div>'
+    + '<div class="desc">企业版按门店规模与个性化需求定制功能和价格，不在此页公开标价。请联系您的专属顾问获取方案。</div></div>';
+}
+function calcBodyHtml(sel, n){
+  var d = plans(n)[sel], mk = mcpOn(sel);
+  var mFirst = mk ? mcpFirstYear(mk) : 0, mYear = mk ? mcpYearly(mk) : 0, grand = d.total + mFirst;
+  return '<div class="top2"><div class="k">' + NAME[sel] + ' · ' + n + ' 家门店' + (mk ? ' · 含 MCP' : '') + '</div>'
+    + '<div class="q">首年合计 <b>' + fmt(grand) + '</b></div></div>'
+    + '<div class="body2">' + billLinesHtml(sel, n) + (mk ? mcpLineHtml(mk) : '')
+    + '<div class="total"><span class="l">首年合计' + (mk ? '<em>含 MCP</em>' : '') + '</span><span class="v">' + fmt(grand) + ' /年</span></div>'
+    + '<p class="renew">' + renewText(sel, d.total, mYear) + '</p>'
+    + (sel !== "lite" ? '<div class="note">阶梯累进：门店按区段分段计价，门店越多，超出部分单价越低，总价随门店数平稳增加。标准版 / 专业版 ' + PRICE.minStores + ' 家起计。</div>' : '')
+    + '</div>';
+}
+function renderCalc(sel){
+  var n = state.n;
+  $("calc").innerHTML = sel === "ent" ? entCalcHtml(n) : calcBodyHtml(sel, n);
+}
+
+/* ===== 合计条 ===== */
+function renderPaybar(sel){
+  var n = state.n, pb = $("payPrice");
+  pb.classList.remove("muted");
+  if(sel === "ent"){
+    $("payLabel").textContent = "企业版 · " + n + " 家门店";
+    pb.textContent = "需单独报价"; pb.classList.add("muted");
+    $("payNote").textContent = "联系您的专属顾问获取方案";
+    return;
+  }
+  var d = curPlan(sel), mk = mcpOn(sel), mFirst = mk ? mcpFirstYear(mk) : 0, mYear = mk ? mcpYearly(mk) : 0;
+  $("payLabel").textContent = NAME[sel] + (mk ? " + MCP" : "") + " · " + n + " 家门店 · 首年合计";
+  pb.textContent = fmt(d.total + mFirst) + " /年";
+  $("payNote").textContent = mk
+    ? "次年续费 " + fmt(renewalTotal(d.total, mYear)) + "/年（不含 MCP 一次性开通费 " + fmt(ADDON_MCP.setup) + "）"
+    : "次年续费 " + fmt(d.total) + "/年（门店数不变时）";
+}
+
+/* ===== 能力对比表 ===== */
+function cmpTableHtml(hiCol){
+  var cols = ["lite","std","pro","ent"];
+  var head = '<thead><tr><th class="l">您关心的</th>' + cols.map(function(k){
+    return '<th' + (hiCol === k ? ' class="hi"' : '') + '>' + NAME[k] + '</th>';
+  }).join("") + '</tr></thead>';
+  var body = '<tbody>' + CMP.map(function(r){
+    var cell = function(v, k){
+      var cls = [];
+      if(hiCol === k) cls.push("hi");
+      if(v === "—" || v === "不含") cls.push("no"); else if(v === "✓") cls.push("yes"); else if(k === "pro") cls.push("strong");
+      return '<td' + (cls.length ? ' class="' + cls.join(" ") + '"' : '') + '>' + v + '</td>';
+    };
+    var ev = r[5] || "按需定制";
+    return '<tr><th>' + r[0] + (r[4] ? '<span class="hint2">' + r[4] + '</span>' : '') + '</th>'
+      + cell(r[1], "lite") + cell(r[2], "std") + cell(r[3], "pro")
+      + '<td class="ent' + (ev === "不含" ? ' no' : '') + (hiCol === "ent" ? ' hi' : '') + '">' + ev + '</td></tr>';
+  }).join("") + '</tbody>';
+  return head + body;
+}
+
+/* ===== 价目表 ===== */
+function renderPriceTables(){
+  var seg = [["第 1–5 家", 0], ["第 6–20 家", 1], ["第 21–50 家", 2]];
+  $("ladderTbl").innerHTML = '<thead><tr><th class="l">门店区段</th><th>轻享版</th><th>标准版</th><th>专业版</th></tr></thead><tbody>'
+    + seg.map(function(s){
+        var i = s[1];
+        return '<tr><th class="l">' + s[0] + '</th>'
+          + (i === 0 ? '<td class="n">¥' + PRICE.lite + '<small class="mut">仅限 1–3 家</small></td>' : '<td class="na">—</td>')
+          + '<td class="n">¥' + PRICE.std[i][1] + '</td><td class="n">¥' + PRICE.pro[i][1] + '</td></tr>';
+      }).join("")
+    + '<tr><th class="l">51 家及以上</th><td class="na" colspan="3">企业版 · 单独报价</td></tr></tbody>';
+}
+function renderQuick(cur){
+  var cell = function(d, n){
+    return '<td class="n">' + fmt(d.total) + (d.billed > n ? '<small class="mut">按 ' + PRICE.minStores + ' 家</small>' : '') + '</td><td class="n">¥' + perMo(d) + '</td>';
+  };
+  $("quick").innerHTML = '<thead><tr><th class="l">门店数</th><th>轻享版</th><th>标准版</th><th>标准版<br>每店每月</th><th>专业版</th><th>专业版<br>每店每月</th></tr></thead><tbody>'
+    + QUICK_LIST.map(function(n){
+        var p = plans(n);
+        return '<tr' + (n === cur ? ' class="hl"' : '') + '><th class="l">' + n + ' 店</th>'
+          + (p.lite ? '<td class="n">' + fmt(p.lite.total) + '</td>' : '<td class="na">—</td>')
+          + cell(p.std, n) + cell(p.pro, n) + '</tr>';
+      }).join("")
+    + '</tbody>';
+}
+
+/* ===== 客户报价单 ===== */
+function quoteHtmlInner(sel, rec){
+  var n = state.n, over = storeStatus(n) === "over", p = plans(n), today = new Date(), until = new Date(today.getTime());
+  until.setDate(until.getDate() + 30);
+  var title = (state.cust ? esc(state.cust) + " · " : "") + "NEW数据中心服务报价单";
+  var mk = mcpOn(sel), d = curPlan(sel);
+  var h = '<div class="qhead"><div><div class="bl">SoticKiwi · NEW数据中心</div><h2>' + title + '</h2></div>'
+    + '<div class="meta">门店数量　' + n + ' 家<br>报价日期　' + ymd(today) + '<br>有效期至　' + ymd(until) + '（30 天）</div></div>'
+    + '<p class="qsub">在您现有的进销存之上，增加一层经营分析能力：不只是"卖了多少、还剩多少"，而是"为什么下滑、哪些货该补、哪家店有问题"。以下报价按您的门店数量计算。</p>';
+
+  /* 推荐 / 所选方案 */
+  h += '<div class="qsec"><h3>' + (sel === rec ? '为您推荐' : '报价方案') + '</h3>';
+  if(sel === "ent"){
+    h += '<div class="qpick"><span class="a">企业版</span>' + (rec === "ent" ? '<span class="pill">推荐</span>' : '') + '<span class="c">' + SUB.ent + '</span><span class="b" style="font-size:18px">单独报价</span>'
+      + '<span class="d">企业版按门店规模与个性化需求定制功能和价格，请联系您的专属顾问获取方案。</span></div>';
+  } else {
+    h += '<div class="qpick"><span class="a">' + NAME[sel] + '</span>' + (sel === rec ? '<span class="pill">推荐</span>' : '') + '<span class="c">' + SUB[sel] + '</span>'
+      + '<span class="b">' + fmt(d.total) + '<small>/年</small></span>'
+      + '<span class="d">每店每月 ¥' + perMo(d) + ' · 每店每天 ¥' + perDay(d) + (d.billed > n ? '（' + PRICE.minStores + ' 家起计）' : '') + '</span></div>';
+  }
+  /* 价格表 */
+  var rows = [];
+  if(p){
+    ["lite","std","pro"].forEach(function(k){
+      var x = p[k]; if(!x) return;
+      rows.push('<tr' + (k === sel ? ' class="hl"' : '') + '><th class="l">' + NAME[k] + (k === rec ? '　<span style="color:var(--star);font-weight:800">推荐</span>' : '') + '</th>'
+        + '<td class="n">' + fmt(x.total) + '</td><td class="n">¥' + perMo(x) + '</td><td class="n">¥' + perDay(x) + '</td>'
+        + '<td class="l" style="font-size:12px;color:var(--ink3)">' + (x.billed > n ? PRICE.minStores + ' 家起计' : (k === "lite" ? '仅限 1–3 家' : '')) + '</td></tr>');
+    });
+  }
+  rows.push('<tr' + (sel === "ent" ? ' class="hl"' : '') + '><th class="l">企业版' + (rec === "ent" ? '　<span style="color:var(--star);font-weight:800">推荐</span>' : '') + '</th><td class="na" colspan="4">单独报价 · 联系您的专属顾问获取方案</td></tr>');
+  h += '<p class="swipe">表格可左右滑动 →</p><div class="tw"><table class="qt"><thead><tr><th class="l">可选版本</th><th>年费</th><th>每店每月</th><th>每店每天</th><th class="l">备注</th></tr></thead><tbody>' + rows.join("") + '</tbody></table></div></div>';
+
+  /* 价格怎么算 */
+  if(sel !== "ent"){
+    h += '<div class="qsec"><h3>价格怎么算<small>' + (sel === "lite" ? '一口价' : '门店按区段分段计价') + '</small></h3>'
+      + '<div class="calc"><div class="body2">' + billLinesHtml(sel, n)
+      + '<div class="total"><span class="l">' + NAME[sel] + '年费</span><span class="v">' + fmt(d.total) + ' /年</span></div></div></div></div>';
+  }
+  /* 已选加购 */
+  if(mk){
+    h += '<div class="qsec"><h3>已选加购</h3><p class="swipe">表格可左右滑动 →</p><div class="tw"><table class="qt"><thead><tr><th class="l">项目</th><th class="l">说明</th><th>首年</th><th>次年起</th></tr></thead><tbody>'
+      + '<tr><th class="l">MCP / 开放 API</th><td class="l">' + mcpTier(mk).label + '，首年含一次性开通费 ' + fmt(ADDON_MCP.setup) + '</td>'
+      + '<td class="n">' + fmt(mcpFirstYear(mk)) + '</td><td class="n">' + fmt(mcpYearly(mk)) + ' /年</td></tr></tbody></table></div></div>';
+  }
+  /* 合计 */
+  h += '<div class="qsec"><h3>合计</h3>';
+  if(sel === "ent"){
+    h += '<div class="qpick"><span class="a">首年合计</span><span class="b" style="font-size:18px">单独报价</span><span class="d">联系您的专属顾问获取方案</span></div>';
+  } else {
+    var mF = mk ? mcpFirstYear(mk) : 0, mY = mk ? mcpYearly(mk) : 0;
+    h += '<div class="qpick"><span class="a">首年合计</span><span class="c">' + NAME[sel] + ' ' + fmt(d.total) + (mk ? ' + MCP 首年 ' + fmt(mF) : '') + '</span>'
+      + '<span class="b">' + fmt(d.total + mF) + '</span>'
+      + '<span class="d">次年起续费 ' + fmt(renewalTotal(d.total, mY)) + ' /年' + (mk ? '（不含 MCP 一次性开通费）' : '') + '，续费按届时门店数计价</span></div>';
+  }
+  h += '</div>';
+  /* 能力对比 */
+  h += '<div class="qsec"><h3>各版本能做什么</h3><p class="swipe">表格可左右滑动 →</p><div class="tw"><table class="cmp">' + cmpTableHtml(sel) + '</table></div></div>';
+  /* 条款 */
+  h += '<div class="qfoot"><ol>'
+    + '<li>报价有效期 30 天；按年签约、按年付费。</li>'
+    + '<li>不含进销存软件本体及服务器费用。</li>'
+    + '<li>轻享版仅限 1–' + PRICE.liteMax + ' 家门店；标准版 / 专业版 ' + PRICE.minStores + ' 家起计（1–2 家按 3 家计费）；超过 ' + MAX_STORES + ' 家门店为企业版，单独报价。</li>'
+    + '<li>MCP / 开放 API 仅专业版可加购，首年另收一次性开通费 ' + fmt(ADDON_MCP.setup) + '，次年起按年费续费；企业版不含 MCP。</li>'
+    + '<li>标准版及以上账号数量不限，增加使用人数不额外收费（轻享版为 3 端口）。</li>'
+    + '</ol><div class="upd">价格更新日期 2026-09-04 · 最终以合同约定为准</div></div>';
+  return h;
+}
+function renderQuote(sel, rec){ $("qdoc").innerHTML = quoteHtmlInner(sel, rec); }
+
+/* ===== 总渲染 ===== */
+function render(){
+  var sel = curSel(), rec = recommend(state.n);
+  if(sel !== "pro") state.mcp = "none";
+  renderHint(sel, rec);
+  renderChips();
+  renderTiers(sel, rec);
+  renderAddon(sel);
+  renderCalc(sel);
+  renderPaybar(sel);
+  $("cmp").innerHTML = cmpTableHtml(sel);
+  renderQuick(state.n);
+  renderQuote(sel, rec);
+  syncPaybarSpace();
+}
+/* 手机端合计条为 fixed：把它的实际高度写进 --pbh，正文底部留出等高空间，避免遮挡 */
+function syncPaybarSpace(){ document.body.style.setProperty("--pbh", $("paybar").offsetHeight + "px"); }
+window.addEventListener("resize", syncPaybarSpace);
+
+/* ===== 事件 ===== */
+function setN(v){
+  v = Math.max(1, Math.min(999, Math.round(Number(v) || 1)));
+  state.n = v;
+  if(+$("n").value !== v) $("n").value = v;
+  $("nr").value = Math.min(60, v);
+  $("nr").style.setProperty("--pct", ((Math.min(60, v) - 1) / 59 * 100) + "%");
+  $("nMinus").disabled = v <= 1;
+  $("nPlus").disabled = v >= 999;
+  render();
+}
+$("nMinus").addEventListener("click", function(){ setN(state.n - 1); });
+$("nPlus").addEventListener("click", function(){ setN(state.n + 1); });
+$("n").addEventListener("focus", function(){ var el = this; setTimeout(function(){ try{ el.select(); }catch(e){} }, 0); });
+$("n").addEventListener("keydown", function(e){ if(e.key === "Enter") this.blur(); });
+$("n").addEventListener("input", function(){ if(this.value !== "") setN(this.value); });
+$("n").addEventListener("blur", function(){ setN(this.value); });
+$("nr").addEventListener("input", function(){ setN(this.value); });
+$("cust").addEventListener("input", function(){ state.cust = this.value.trim(); renderQuote(curSel(), recommend(state.n)); });
+$("chips").addEventListener("click", function(e){ var b = e.target.closest(".chip"); if(b) setN(b.dataset.n); });
+function pick(t, refocus){
+  if(!t || !t.dataset.k) return;
+  state.sel = t.dataset.k;
+  render();
+  if(refocus){ var el = document.querySelector('.tier[data-k="' + state.sel + '"]'); if(el) el.focus(); }
+}
+$("tiers").addEventListener("click", function(e){ pick(e.target.closest(".tier[data-k]"), false); });
+$("tiers").addEventListener("keydown", function(e){
+  if(e.key !== "Enter" && e.key !== " ") return;
+  var t = e.target.closest(".tier[data-k]"); if(!t) return;
+  e.preventDefault(); pick(t, true);
+});
+$("addon").addEventListener("change", function(e){
+  if(e.target && e.target.id === "mcpSel"){ state.mcp = e.target.value; render(); var s = $("mcpSel"); if(s) s.focus(); }
+});
+$("hint").addEventListener("click", function(e){
+  if(e.target && e.target.id === "unpin"){ e.preventDefault(); state.sel = null; render(); }
+});
+function goQuote(){ $("quoteWrap").scrollIntoView({behavior: "smooth", block: "start"}); }
+$("goQuote").addEventListener("click", goQuote);
+$("goQuote2").addEventListener("click", goQuote);
+$("doPrint").addEventListener("click", function(){ window.print(); });
+
+/* 下载独立 HTML 报价单 */
+function quoteFileHtml(){
+  var css = $("appcss").textContent;
+  var title = $("qdoc").querySelector("h2").textContent;
+  return '<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="format-detection" content="telephone=no"><meta name="robots" content="noindex,nofollow">'
+    + '<title>' + esc(title) + '</title><style>:root{color-scheme:light dark}html,body{margin:0}</style>'
+    + '<style>' + css + '\n.wrap{max-width:900px;padding:24px max(16px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}'
+    + '\n@media(max-width:640px){.wrap{padding:10px max(10px,env(safe-area-inset-right)) calc(16px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left))}}'
+    + '\n@media print{.wrap{padding:0}}</style>'
+    + '</head><body><main class="wrap"><div id="quote">' + $("quote").innerHTML + '</div></main></body></html>';
+}
+$("doDl").addEventListener("click", function(){
+  var name = (state.cust ? state.cust.replace(/[\\\/:*?"<>|]/g, "") + "-" : "") + "NEW数据中心报价单-" + state.n + "店.html";
+  try{
+    var blob = new Blob(["﻿" + quoteFileHtml()], {type: "text/html;charset=utf-8"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = name; a.style.display = "none";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 1500);
+    $("dlMsg").textContent = "已生成，请在浏览器下载列表里查看";
+  }catch(err){
+    $("dlMsg").textContent = "此浏览器不支持直接下载，请用「打印 / 存为 PDF」";
+  }
+});
+
+renderPriceTables();
+setN(10);
+})();
+</script>
+</body>
+</html>

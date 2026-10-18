@@ -131,7 +131,6 @@ input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;bac
 .tier .price .yr{font-size:12px;color:var(--ink3);font-weight:600}
 .tier .permo{font-size:12px;color:var(--ink2);margin-top:7px;font-variant-numeric:tabular-nums}
 .tier .permo b{color:var(--ink);font-weight:700}
-.tier .permo .minn{font-size:11px;color:var(--ink3);margin-left:2px}
 .tier .na{font-size:13px;color:var(--ink3);margin-top:12px;font-weight:600}
 .tier .edesc{margin:10px 0 0;font-size:13px;color:var(--ink2);line-height:1.55}
 .tier .edesc b{color:var(--brand);font-weight:800}
@@ -454,7 +453,7 @@ small.mut{display:block;font-size:11px;color:var(--ink3);font-weight:400}
         <h4>常见门店数价目速查（年费）</h4>
         <p class="swipe">表格可左右滑动 →</p>
         <div class="tw"><table class="quick" id="quick"></table></div>
-        <p class="tnote">每店每月 = 年费 ÷ 计费门店数 ÷ 12；不足 3 家的标准版 / 专业版按 3 家折算。</p>
+        <p class="tnote">每店每月 = 年费 ÷ 实际门店数 ÷ 12。</p>
       </div>
     </div>
   </section>
@@ -573,8 +572,9 @@ var ICON_STAR = '<svg width="11" height="11" viewBox="0 0 24 24" fill="#fff"><pa
 var $ = function(id){ return document.getElementById(id); };
 function fmt(v){ return "¥" + Math.round(v).toLocaleString("en-US"); }
 function rng(a, b){ return a === b ? "第 " + a + " 家" : "第 " + a + "–" + b + " 家"; }
-function perMo(d){ return Math.round(d.total / d.billed / 12 * 10) / 10; }
-function perDay(d){ return (d.total / d.billed / 365).toFixed(2); }
+/* 每店单价按客户实际门店数折算（不按 3 家起计折算），年费仍按计费门店数 */
+function perMo(d, n){ return Math.round(d.total / n / 12 * 10) / 10; }
+function perDay(d, n){ return (d.total / n / 365).toFixed(2); }
 function esc(s){ return String(s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 function ymd(d){ return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 
@@ -631,8 +631,7 @@ function renderTiers(sel, rec){
       + '<div class="row1"><span class="nm">' + NAME[k] + '</span><span class="radio"></span></div>'
       + '<div class="sub">' + SUB[k] + '</div>'
       + '<div class="price"><span class="big">' + fmt(d.total) + '</span><span class="yr">/年</span></div>'
-      + '<div class="permo">每店每月 <b>¥' + perMo(d) + '</b> · 每店每天 <b>¥' + perDay(d) + '</b>'
-        + (d.billed > n ? '<span class="minn">（' + PRICE.minStores + ' 家起计）</span>' : '') + '</div>'
+      + '<div class="permo">每店每月 <b>¥' + perMo(d, n) + '</b> · 每店每天 <b>¥' + perDay(d, n) + '</b></div>'
       + '<div class="feats-gap"></div><div class="feats">' + FEAT[k].map(function(f){ return '<span>' + f + '</span>'; }).join("") + '</div></div>';
   });
   var eSel = sel === "ent";
@@ -761,7 +760,7 @@ function renderPriceTables(){
 }
 function renderQuick(cur){
   var cell = function(d, n){
-    return '<td class="n">' + fmt(d.total) + (d.billed > n ? '<small class="mut">按 ' + PRICE.minStores + ' 家</small>' : '') + '</td><td class="n">¥' + perMo(d) + '</td>';
+    return '<td class="n">' + fmt(d.total) + (d.billed > n ? '<small class="mut">按 ' + PRICE.minStores + ' 家</small>' : '') + '</td><td class="n">¥' + perMo(d, n) + '</td>';
   };
   $("quick").innerHTML = '<thead><tr><th class="l">门店数</th><th>轻享版</th><th>标准版</th><th>标准版<br>每店每月</th><th>专业版</th><th>专业版<br>每店每月</th></tr></thead><tbody>'
     + QUICK_LIST.map(function(n){
@@ -791,7 +790,7 @@ function quoteHtmlInner(sel, rec){
   } else {
     h += '<div class="qpick"><span class="a">' + NAME[sel] + '</span>' + (sel === rec ? '<span class="pill">推荐</span>' : '') + '<span class="c">' + SUB[sel] + '</span>'
       + '<span class="b">' + fmt(d.total) + '<small>/年</small></span>'
-      + '<span class="d">每店每月 ¥' + perMo(d) + ' · 每店每天 ¥' + perDay(d) + (d.billed > n ? '（' + PRICE.minStores + ' 家起计）' : '') + '</span></div>';
+      + '<span class="d">每店每月 ¥' + perMo(d, n) + ' · 每店每天 ¥' + perDay(d, n) + '</span></div>';
   }
   /* 价格表 */
   var rows = [];
@@ -799,7 +798,7 @@ function quoteHtmlInner(sel, rec){
     ["lite","std","pro"].forEach(function(k){
       var x = p[k]; if(!x) return;
       rows.push('<tr' + (k === sel ? ' class="hl"' : '') + '><th class="l">' + NAME[k] + (k === rec ? '　<span style="color:var(--star);font-weight:800">推荐</span>' : '') + '</th>'
-        + '<td class="n">' + fmt(x.total) + '</td><td class="n">¥' + perMo(x) + '</td><td class="n">¥' + perDay(x) + '</td>'
+        + '<td class="n">' + fmt(x.total) + '</td><td class="n">¥' + perMo(x, n) + '</td><td class="n">¥' + perDay(x, n) + '</td>'
         + '<td class="l" style="font-size:12px;color:var(--ink3)">' + (x.billed > n ? PRICE.minStores + ' 家起计' : (k === "lite" ? '仅限 1–' + PRICE.liteMax + ' 家' : '')) + '</td></tr>');
     });
   }

@@ -447,7 +447,7 @@ small.mut{display:block;font-size:11px;color:var(--ink3);font-weight:400}
       <div>
         <h4>阶梯单价（元 / 店 / 年）</h4>
         <div class="tw"><table class="ladder" id="ladderTbl"></table></div>
-        <p class="tnote">标准版 / 专业版按区段累进计价，<b>3 家起计</b>（1–2 家按 3 家价格算）；轻享版仅限 1–2 家，¥380 / 店 / 年一口价；超过 50 家为企业版，单独报价。</p>
+        <p class="tnote">标准版 / 专业版按区段累进计价；轻享版仅限 1–2 家，¥380 / 店 / 年一口价；超过 50 家为企业版，单独报价。</p>
       </div>
       <div>
         <h4>常见门店数价目速查（年费）</h4>
@@ -596,8 +596,6 @@ function renderHint(sel, rec){
   var n = state.n, tip;
   if(storeStatus(n) === "over"){
     tip = "超过 " + MAX_STORES + " 家门店为<b>企业版</b>，不提供公开价目，请联系您的专属顾问获取方案。";
-  } else if(n < PRICE.minStores){
-    tip = "标准版 / 专业版 <b>" + PRICE.minStores + " 家起计</b>：" + n + " 家门店按 " + PRICE.minStores + " 家价格计算；轻享版按实际门店数 ¥" + PRICE.lite + " / 店 / 年，仅限 1–" + PRICE.liteMax + " 家。";
   } else {
     tip = "点击版本卡可切换版本，下方算式、合计与客户报价单同步更新。";
   }
@@ -659,23 +657,24 @@ function renderAddon(sel){
     + '</div>';
 }
 
-/* ===== 分段账单（同商城 billLinesHtml） ===== */
+/* ===== 分段账单（同商城 billLinesHtml） =====
+ * 标准 / 专业版门店数不足起计数（1–2 家按 3 家价）时只出一行「n 家门店 ¥套餐价」：不写区段、单价和「3 家起计」，色条不标第几家，免得客户拿单价去乘 */
 function billLinesHtml(k, n){
-  var d = plans(n)[k], isLite = k === "lite";
+  var d = plans(n)[k], isLite = k === "lite", under = !isLite && d.billed > n;
   var bar = d.parts.map(function(pt){
     var pct = pt.sub / d.total * 100;
     return '<i style="width:' + pct + '%;background:' + SEGC[pt.idx] + '">' + (pct > 18 ? fmt(pt.sub) : '') + '</i>';
   }).join("");
-  var lines = d.parts.map(function(pt, i){
+  var lines = under
+    ? '<div class="line first"><span class="dot" style="background:' + SEGC[0] + '"></span><span class="seg"><b>' + n + ' 家门店</b></span><span class="sub">' + fmt(d.total) + '</span></div>'
+    : d.parts.map(function(pt, i){
     return '<div class="line' + (i === 0 ? ' first' : '') + '"><span class="dot" style="background:' + SEGC[pt.idx] + '"></span>'
       + '<span class="seg"><b>' + (isLite ? pt.count + ' 家' : rng(pt.from, pt.to)) + '</b> × ¥' + pt.unit.toLocaleString("en-US") + (isLite ? '' : ' <span style="color:var(--ink3)">（' + pt.count + ' 家）</span>') + '</span>'
       + '<span class="sub">= ' + fmt(pt.sub) + '</span></div>';
   }).join("");
-  var minRow = d.billed > n
-    ? '<div class="line minrow"><span class="dot" style="background:transparent"></span><span class="seg">共 ' + n + ' 家门店，' + PRICE.minStores + ' 家起计，按 ' + PRICE.minStores + ' 家计费</span><span class="sub"></span></div>' : '';
   return '<p class="k2">' + NAME[k] + ' · ' + n + ' 家门店 · ' + (isLite ? "轻享版一口价 ¥" + PRICE.lite + "/店/年，仅限 1–" + PRICE.liteMax + " 家" : "门店按区段分段计价，越往后的门店单价越低") + '</p>'
-    + (isLite ? '' : '<div class="bar">' + bar + '</div><div class="barlab"><span>第 1 家</span><span>第 ' + d.billed + ' 家</span></div>')
-    + lines + minRow;
+    + (isLite ? '' : '<div class="bar">' + bar + '</div>' + (under ? '' : '<div class="barlab"><span>第 1 家</span><span>第 ' + d.billed + ' 家</span></div>'))
+    + lines;
 }
 function mcpLineHtml(k){
   return '<div class="line"><span class="dot" style="background:var(--star)"></span><span class="seg"><b>MCP / 开放 API</b> · ' + mcpTier(k).label.split(" · ")[0]
@@ -699,7 +698,7 @@ function calcBodyHtml(sel, n){
     + '<div class="body2">' + billLinesHtml(sel, n) + (mk ? mcpLineHtml(mk) : '')
     + '<div class="total"><span class="l">首年合计' + (mk ? '<em>含 MCP</em>' : '') + '</span><span class="v">' + fmt(grand) + ' /年</span></div>'
     + '<p class="renew">' + renewText(sel, d.total, mYear) + '</p>'
-    + (sel !== "lite" ? '<div class="note">阶梯累进：门店按区段分段计价，门店越多，超出部分单价越低，总价随门店数平稳增加。标准版 / 专业版 ' + PRICE.minStores + ' 家起计。</div>' : '')
+    + (sel !== "lite" ? '<div class="note">阶梯累进：门店按区段分段计价，门店越多，超出部分单价越低，总价随门店数平稳增加。</div>' : '')
     + '</div>';
 }
 function renderCalc(sel){
@@ -747,20 +746,27 @@ function cmpTableHtml(hiCol){
 }
 
 /* ===== 价目表 ===== */
+/* 起计门店数 m > 1 时，标准 / 专业版前 m 家合成一行，直接显示这 m 家的年费总价（如 ¥1,140），不写「不足 m 家按 m 家计费」；
+ * 之后各区段单价标「/店」；轻享版注明「/店」和可买门店数，免得被当成 1–3 家的总价（同商城价目表） */
 function renderPriceTables(){
-  var seg = [["第 1–5 家", 0], ["第 6–20 家", 1], ["第 21–50 家", 2]];
+  var m = Math.min(PRICE.minStores, MAX_STORES), base = m > 1;
+  var lite = '<td class="n">¥' + PRICE.lite + '/店<small class="mut">限 1–' + PRICE.liteMax + ' 家</small></td>';
+  var rows = base ? '<tr><th class="l">' + rng(1, m) + '</th>' + lite
+    + '<td class="n">' + fmt(ladder(m, PRICE.std).total) + '</td><td class="n">' + fmt(ladder(m, PRICE.pro).total) + '</td></tr>' : '';
+  var prev = 0;
+  rows += PRICE.std.map(function(t, i){
+    var from = Math.max(prev + 1, base ? m + 1 : 1), to = Math.min(t[0], MAX_STORES); prev = t[0];
+    if(from > to) return '';
+    return '<tr><th class="l">' + rng(from, to) + '</th>'
+      + (!base && i === 0 ? lite : '<td class="na">—</td>')
+      + '<td class="n">¥' + t[1] + '/店</td><td class="n">¥' + PRICE.pro[i][1] + '/店</td></tr>';
+  }).join("");
   $("ladderTbl").innerHTML = '<thead><tr><th class="l">门店区段</th><th>轻享版</th><th>标准版</th><th>专业版</th></tr></thead><tbody>'
-    + seg.map(function(s){
-        var i = s[1];
-        return '<tr><th class="l">' + s[0] + '</th>'
-          + (i === 0 ? '<td class="n">¥' + PRICE.lite + '<small class="mut">仅限 1–' + PRICE.liteMax + ' 家</small></td>' : '<td class="na">—</td>')
-          + '<td class="n">¥' + PRICE.std[i][1] + '</td><td class="n">¥' + PRICE.pro[i][1] + '</td></tr>';
-      }).join("")
-    + '<tr><th class="l">51 家及以上</th><td class="na" colspan="3">企业版 · 单独报价</td></tr></tbody>';
+    + rows + '<tr><th class="l">' + (MAX_STORES + 1) + ' 家及以上</th><td class="na" colspan="3">企业版 · 单独报价</td></tr></tbody>';
 }
 function renderQuick(cur){
   var cell = function(d, n){
-    return '<td class="n">' + fmt(d.total) + (d.billed > n ? '<small class="mut">按 ' + PRICE.minStores + ' 家</small>' : '') + '</td><td class="n">¥' + perMo(d, n) + '</td>';
+    return '<td class="n">' + fmt(d.total) + '</td><td class="n">¥' + perMo(d, n) + '</td>';
   };
   $("quick").innerHTML = '<thead><tr><th class="l">门店数</th><th>轻享版</th><th>标准版</th><th>标准版<br>每店每月</th><th>专业版</th><th>专业版<br>每店每月</th></tr></thead><tbody>'
     + QUICK_LIST.map(function(n){
@@ -799,7 +805,7 @@ function quoteHtmlInner(sel, rec){
       var x = p[k]; if(!x) return;
       rows.push('<tr' + (k === sel ? ' class="hl"' : '') + '><th class="l">' + NAME[k] + (k === rec ? '　<span style="color:var(--star);font-weight:800">推荐</span>' : '') + '</th>'
         + '<td class="n">' + fmt(x.total) + '</td><td class="n">¥' + perMo(x, n) + '</td><td class="n">¥' + perDay(x, n) + '</td>'
-        + '<td class="l" style="font-size:12px;color:var(--ink3)">' + (x.billed > n ? PRICE.minStores + ' 家起计' : (k === "lite" ? '仅限 1–' + PRICE.liteMax + ' 家' : '')) + '</td></tr>');
+        + '<td class="l" style="font-size:12px;color:var(--ink3)">' + (k === "lite" ? '仅限 1–' + PRICE.liteMax + ' 家' : '') + '</td></tr>');
     });
   }
   rows.push('<tr' + (sel === "ent" ? ' class="hl"' : '') + '><th class="l">企业版' + (rec === "ent" ? '　<span style="color:var(--star);font-weight:800">推荐</span>' : '') + '</th><td class="na" colspan="4">单独报价 · 联系您的专属顾问获取方案</td></tr>');
